@@ -1,14 +1,13 @@
 import React, {Component} from 'react'
-import store from "../store";
+import {connect} from "react-redux";
+
 import {addOneTodoAction} from "../store/actionCreators";
 
-export default class Top extends Component {
+
+class Top extends Component {
     constructor(props) {
         super(props);
-
         this.myInputRef = React.createRef()
-
-        this.state = store.getState()
     }
 
     render() {
@@ -22,14 +21,6 @@ export default class Top extends Component {
         )
     }
 
-    componentDidMount() {
-        store.subscribe(this._handleStoreChange)
-    }
-
-    _handleStoreChange = () => {
-        this.setState(store.getState())
-    }
-
     _handleKeyEvent(e) {
         // 按回车
         if (e.keyCode === 13) {
@@ -39,7 +30,7 @@ export default class Top extends Component {
                 return alert('输入的内容为空')
             }
 
-            const {todos} = this.state
+            const {todos} = this.props
             const {lastTodoId} = todos.length === 0 ? 0 : todos[todos.length - 1].id
 
             let todo = {
@@ -48,9 +39,26 @@ export default class Top extends Component {
                 finished: false
             }
 
-            store.dispatch(addOneTodoAction(todo))
+            this.props.addOneTodo(todo)
 
             this.myInputRef.current.value = ''
         }
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        todos: state.todos
+    }
+}
+
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        addOneTodo(todo) {
+            return dispatch(addOneTodoAction(todo))
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Top)

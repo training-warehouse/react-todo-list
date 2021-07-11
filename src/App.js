@@ -1,6 +1,6 @@
 import React from 'react'
+import {connect} from "react-redux";
 
-import store from "./store";
 import {getAllTodoAction} from "./store/actionCreators";
 
 import './index.css'
@@ -23,11 +23,17 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        const action = getAllTodoAction()
-        store.dispatch(action)
+        this.props.reqTodoList()
     }
 
 }
 
+const mapDispatchToProps = (dispatch) => {
+    return {
+        reqTodoList() {
+            dispatch(getAllTodoAction())
+        }
+    }
+}
 
-export default App;
+export default connect(null, mapDispatchToProps)(App)
