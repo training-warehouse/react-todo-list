@@ -1,24 +1,32 @@
 import React, {Component} from 'react'
-import PropTypes from 'prop-types'
+
+import store from "../store";
+
 
 import Item from "./Item";
 
 export default class List extends Component {
-    static propTypes = {
-        todos: PropTypes.array.isRequired,
-        changeFinished: PropTypes.func.isRequired,
-        removeTodoWithId: PropTypes.func.isRequired,
+    constructor(props) {
+        super(props);
+
+        this.state = store.getState()
+    }
+
+    componentDidMount() {
+        store.subscribe(this._handleStoreChange)
+    }
+
+    _handleStoreChange = () => {
+        this.setState(store.getState())
     }
 
     render() {
-        let {todos, changeFinished, removeTodoWithId} = this.props
+        let {todos} = this.state
         return (
             <ul className='todo-main'>
                 {
                     todos.map((todo, index) => (
-                        <Item key={todo.id} todo={todo}
-                              changeFinished={changeFinished}
-                              removeTodoWithId={removeTodoWithId}/>
+                        <Item key={todo.id} todo={todo}/>
                     ))
                 }
             </ul>

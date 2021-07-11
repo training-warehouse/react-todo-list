@@ -1,17 +1,14 @@
 import React, {Component} from 'react'
-import PropTypes from 'prop-types'
-
-import PubSub from 'pubsub-js'
+import store from "../store";
+import {addOneTodoAction} from "../store/actionCreators";
 
 export default class Top extends Component {
-    static propTypes = {
-        lastTodoId: PropTypes.number.isRequired,
-    }
-
     constructor(props) {
         super(props);
 
         this.myInputRef = React.createRef()
+
+        this.state = store.getState()
     }
 
     render() {
@@ -25,6 +22,14 @@ export default class Top extends Component {
         )
     }
 
+    componentDidMount() {
+        store.subscribe(this._handleStoreChange)
+    }
+
+    _handleStoreChange = () => {
+        this.setState(store.getState())
+    }
+
     _handleKeyEvent(e) {
         // 按回车
         if (e.keyCode === 13) {
@@ -34,14 +39,16 @@ export default class Top extends Component {
                 return alert('输入的内容为空')
             }
 
-            const {lastTodoId} = this.props
+            const {todos} = this.state
+            const {lastTodoId} = todos.length === 0 ? 0 : todos[todos.length - 1].id
+
             let todo = {
                 id: lastTodoId,
                 title,
                 finished: false
             }
 
-            PubSub.publish('addTodo', todo)
+            store.dispatch(addOneTodoAction(todo))
 
             this.myInputRef.current.value = ''
         }
