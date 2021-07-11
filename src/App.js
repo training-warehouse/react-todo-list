@@ -23,13 +23,7 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        const todos = [
-            {id: 1, title: '学习2个小时的react课程', finished: false},
-            {id: 2, title: '学习2个小时的Vue课程', finished: false},
-            {id: 3, title: '学习1个小时的Webpack课程', finished: true},
-            {id: 4, title: '刷2小时抖音', finished: true},
-        ]
-        const action = getAllTodoAction(todos)
+        const action = getAllTodoAction()
         store.dispatch(action)
     }
 

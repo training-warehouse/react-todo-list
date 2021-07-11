@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
     GET_ALL_TODO,
     DEL_ONE_TODO,
@@ -7,10 +8,22 @@ import {
     IS_CHECKED_ALL_TODO
 } from './actionTypes'
 
-export const getAllTodoAction = (todos) => ({
-    type: GET_ALL_TODO,
-    todos
-})
+import store from "./index";
+
+
+export const getAllTodoAction = () => {
+    return () => {
+        axios.get('/data.json').then(res => {
+            if (res.data) {
+                const todos = res.data.todos
+                store.dispatch({
+                    type: GET_ALL_TODO,
+                    todos
+                })
+            }
+        })
+    }
+}
 
 export const delOneTodoAction = (todoId) => ({
     type: DEL_ONE_TODO,
